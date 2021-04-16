@@ -43,23 +43,41 @@ async function getRecipeById(recipeId){
     recipe_id: recipe[0].recipe_id,
     recipe_name: recipe[0].recipe_name,
     created_at: recipe[0].createdAt,
-    steps: []
-  }
+    steps: recipe.reduce((acc, row) => {
 
+      if(row.ingredient_id === null){
+        return acc.concat({
+          step_id: row.recipe_steps_id,
+          step_number: row.recipe_steps_number,
+          instructions: row.recipe_step_instructions
+        })
+      }
 
+      if(row.ingredient_id && !acc.find(step => step.recipe_steps_id === row.recipe_steps_id)){
+        return acc.concat({
+          step_id: row.recipe_steps_id,
+          step_number: row.recipe_steps_number,
+          instructions: row.recipe_step_instructions,
+          ingredients: [
+            {
+              ingredient_id: row.ingredient_id,
+              ingredient_name: row.ingredient_name,
+              quantity: row.step_ingredient_quantity
+            },
+          ]
+        })
+      }
 
-  recipe.forEach(step => {
-
-
-      result.steps.push({
-        step_id: step.recipe_steps_id,
-        step_number: step.recipe_steps_number,
-        step_instructions: step.recipe_step_instructions,
-        ingredients: []
+      const currentStep = acc.find(step => step.recipe_steps_id === row.recipe_steps_id)
+      currentStep.ingredients.push({
+        ingredient_id: row.ingredient_id,
+        ingredient_name: row.ingredient_name,
+        quantity: row.quantity
       })
 
-
-  });
+      return acc
+    },[])
+  }
 
   return result
 
