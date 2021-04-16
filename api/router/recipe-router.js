@@ -6,7 +6,7 @@ const {validateId} = require('../middleware/middleware')
 
 //GET /api/recipe/:id
 // getRecipeById(recipe_id)
-router.use('/:id',validateId, (req,res,next) => {
+router.get('/:id',validateId, (req,res,next) => {
   Recipe.getRecipeById(req.params.id)
     .then(result => {
       res.json(result)
@@ -15,5 +15,12 @@ router.use('/:id',validateId, (req,res,next) => {
       next(err)
     })
 });
+
+//post /api/recipe/
+router.post('/', (req,res,next) => {
+
+  res.json('posted')
+
+})
 
 module.exports = router;
