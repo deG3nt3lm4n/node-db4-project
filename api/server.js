@@ -1,10 +1,12 @@
 const express = require('express');
 const helmet = require('helmet');
+const recipeRouter = require('./router/recipe-router');
 
 const server = express();
 
 server.use(express.json());
 server.use(helmet());
+server.use('/api/recipe', recipeRouter)
 
 server.use('/', (req,res) => {
   res.json('welcome to hell')
